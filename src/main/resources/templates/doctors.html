@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Doctors</title>
+</head>
+<body>
+    <h1>Doctors</h1>
+    <form th:action="@{/admin/doctors}" method="post">
+        <label>Name:</label>
+        <input type="text" name="name" />
+        <label>Specialization:</label>
+        <input type="text" name="specialization" />
+        <button type="submit">Add Doctor</button>
+    </form>
+
+    <h2>All Doctors</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="doctor : ${doctors}">
+                <td th:text="${doctor.id}"></td>
+                <td th:text="${doctor.name}"></td>
+                <td th:text="${doctor.specialization}"></td>
+                <td>
+                    <form th:action="@{/admin/doctors/{id}(id=${doctor.id})}" method="post">
+                        <input type="hidden" name="_method" value="put" />
+                        <label>Name:</label>
+                        <input type="text" name="name" th:value="${doctor.name}" />
+                        <label>Specialization:</label>
+                        <input type="text" name="specialization" th:value="${doctor.specialization}" />
+                        <button type="submit">Update</button>
+                    </form>
+                    <form th:action="@{/admin/doctors/{id}/delete(id=${doctor.id})}" method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome Page</title>
+</head>
+<body>
+    <h1>Welcome to the Admin Dashboard</h1>
+    <p>You are logged in as Admin.</p>
+    <ul>
+        <li><a th:href="@{/admin/appointments}">Manage Appointments</a></li>
+        <li><a th:href="@{/admin/doctors}">Manage Doctors</a></li>
+        <li><a th:href="@{/admin/patients}">Manage Patients</a></li>
+        <li><a th:href="@{/logout}">Logout</a></li>
+    </ul>
+</body>
+</html>

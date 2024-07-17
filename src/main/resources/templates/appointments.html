@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Appointments</title>
+</head>
+<body>
+    <h1>Appointments</h1>
+    <form th:action="@{/admin/appointments}" method="post">
+        <label>Patient ID:</label>
+        <input type="text" name="patientId" required />
+        <label>Doctor ID:</label>
+        <input type="text" name="doctorId" required />
+        <label>Date:</label>
+        <input type="date" name="date" required />
+        <button type="submit">Add Appointment</button>
+    </form>
+
+  
+</body>
+</html>
