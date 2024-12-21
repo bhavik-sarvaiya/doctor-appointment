@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Book Appointment</title>
+<title>Appointments</title>
 <link rel="stylesheet" type="text/css" href=""
 	th:href="@{/css/styles.css}" />
 <link rel="stylesheet"
@@ -31,41 +31,26 @@
 		</div>
 	</header>
 
-	<!-- <div class="Dform">
-		<h1>
-			Welcome to KK's hospital
-			<span th:text="${doctor.name}"></span>
-			.
-		</h1>
-		<br>
-	</div> -->
-	
-	<div class="Dform">
-		<h1>Book an Appointment</h1>
-		<form action="/appointment/create" method="post">
-			<label for="patient">Patient:</label> 
-			<!-- <select name="patientId"
-				>
-				<option th:text="${username}" th:value="${userId}"
-					></option>
-			</select> <br> -->
-			<input name="patientName" th:value="${username}" readonly="readonly"><br>
-			<input type="hidden" name="patientId" th:value="${userId}"><br>
-			<br> <label for="doctor">Doctor:</label> <select name="doctorId"
-				required>
-				<option th:each="doctor : ${doctors}" th:value="${doctor.id}"
-					th:text="${doctor.name}"></option>
-			</select> <br>
-			<br> <label for="appointmentTime">Appointment Date and
-				Time:</label> <input type="datetime-local" name="appointmentTime" required />
-			<br>
-			<br>
+	<h1>List of Appointments</h1>
+	<table class="doctor-data-table Appointment">
+		<thead>
+			<tr>
+				<th>Sr. No.</th>
+				<th>Appointment Date</th>
+				<!-- <th>Patient</th> -->
+				<th>Doctor</th>
+			</tr>
+		</thead>
+		<tbody>
 
-			<button type="submit">Book Appointment</button>
-		</form>
-	</div>
-
-
-
+			<tr th:each="appointment, iterStat : ${appointments}">
+				<td th:text="${iterStat.index + 1}"></td>
+				<!-- Display serial number -->
+				<td th:text="${appointment.appointmentTime}"></td>
+				<!-- <td th:text="${appointment.patient.name}"></td> -->
+				<td th:text="${appointment.doctor.name}"></td>
+			</tr>
+		</tbody>
+	</table>
 </body>
 </html>

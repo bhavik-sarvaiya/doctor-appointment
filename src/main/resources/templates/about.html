@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kk's HOSPITAL | About Us Page</title>
+    <link rel="stylesheet" type="text/css" href="" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <h1 class="logo"><a href="" th:href="@{/welcome}"><i class="fa-solid fa-hospital-user"></i> KK's </a></h1>
+                <ul class="nav-items">
+                    <li class="nav-item"><a href="" th:href="@{/welcome}">Home</a></li>
+                    <li class="nav-item"><a href="" th:href="@{/about}">About Us</a></li>
+                    <li class="nav-item"><a href="" th:href="@{/contact}">Contact</a></li>
+                    <!-- Show Login or Username based on whether user is logged in -->
+                     <li class="nav-item" th:if="${username == null}" onclick="openForm()"><a>Login</a></li>
+                    <li class="nav-item" th:if="${username != null}">
+                        <span style="color:white">Welcome, <span th:text="${username}"></span></span>
+                    </li>
+                    <li class="nav-item" th:if="${username != null}">
+                        <a th:href="@{/logout}">logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="aboutUs">
+            <h1>About Us</h1>
+
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae molestiae facilis quibusdam hic
+            officiis aut veniam quia animi quod voluptate tempora incidunt autem, ut vel, iusto quis distinctio soluta
+            error, cumque quam vitae explicabo. Exercitationem esse quos dolorum explicabo nisi aspernatur doloremque
+            minus vero asperiores at quibusdam distinctio facilis aut pariatur voluptate, omnis inventore eos delectus
+            ut deserunt fugit incidunt possimus voluptatibus. Accusamus optio quam incidunt? Unde eaque minus vel
+            expedita nemo recusandae molestiae ullam nobis. Earum qui ex obcaecati eaque dicta voluptas magnam amet
+            repellat officia consectetur illo et, aliquam enim quibusdam? Sapiente temporibus aperiam eveniet laborum
+            voluptates sint eaque ad cum quam vero. Repellat velit totam dolorum repudiandae, libero minus quas
+            perspiciatis odio, deleniti nesciunt quia nisi qui similique nostrum nemo laborum quis veritatis natus
+            facilis modi eveniet assumenda et. Nobis porro laborum aut corporis ea, quisquam eveniet optio beatae,
+            deserunt laboriosam cum in consequuntur facilis nesciunt ipsa!
+            <br>
+            <br>
+
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Recusandae molestiae facilis quibusdam hic
+            officiis aut veniam quia animi quod voluptate tempora incidunt autem, ut vel, iusto quis distinctio soluta
+            error, cumque quam vitae explicabo. Exercitationem esse quos dolorum explicabo nisi aspernatur doloremque
+            minus vero asperiores at quibusdam distinctio facilis aut pariatur voluptate, omnis inventore eos delectus
+            ut deserunt fugit incidunt possimus voluptatibus.
+
+        </div>
+
+    </header>
+
+</body>
+
+</html>

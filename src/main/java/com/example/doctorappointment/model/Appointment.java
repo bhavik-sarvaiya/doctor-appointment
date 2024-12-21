@@ -1,11 +1,5 @@
 package com.example.doctorappointment.model;
 
-import java.time.LocalDateTime;
-
-import org.antlr.v4.runtime.misc.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,19 +23,18 @@ public class Appointment {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-
-    @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime appointmentTime;
+        
+    
+    private String appointmentTime;
 
     public Appointment() {
     }
 
-    public Appointment(Integer id, Patient patient, Doctor doctor, LocalDateTime appointmentTime) {
+    public Appointment(Integer id, Patient patient, Doctor doctor) {
         this.id = id;
         this.patient = patient;
         this.doctor = doctor;
-        this.appointmentTime = appointmentTime;
+        
     }
 
     public Integer getId() {
@@ -68,11 +61,17 @@ public class Appointment {
         this.doctor = doctor;
     }
 
-    public LocalDateTime getAppointmentTime() {
+    public String getAppointmentTime() {
         return appointmentTime;
     }
 
-    public void setAppointmentTime(LocalDateTime appointmentTime) {
+    public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
     }
+
+	@Override
+	public String toString() {
+		return "Appointment [id=" + id + ", patient=" + patient + ", doctor=" + doctor +  ", appointmentTime=" + appointmentTime +  "]";
+	}    
+    
 }

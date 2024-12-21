@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kk's HOSPITAL | Welcome to KK's hospital patient</title>
+<link rel="stylesheet" type="text/css" href=""
+	th:href="@{/css/styles.css}" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+<body>
+
+	<header class="header">
+		<div class="container">
+			<nav class="navbar">
+				<h1 class="logo">
+					<a th:href="@{/welcome}"><i
+						class="fa-solid fa-hospital-user"></i> KK's </a>
+				</h1>
+				<ul class="nav-items">
+					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
+					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
+					<li class="nav-item"><span th:text="${patient.name}"></span></li>
+				</ul>
+			</nav>
+
+			<div class="Pform">
+				<h1>
+					Welcome to KK's hospital <span th:text="${patient.name}"></span>.
+				</h1>
+			</div>
+		</div>
+	</header>
+
+	<!--     <h1>Doctors</h1> -->
+	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
+	<!--         <label>Name:</label> -->
+	<!--         <input type="text" name="name" /> -->
+	<!--         <label>Specialization:</label> -->
+	<!--         <input type="text" name="specialization" /> -->
+	<!--         <button type="submit">Add Doctor</button> -->
+	<!--     </form> -->
+	<br>
+	<h2>Your today's appoinment</h2>
+	<table class="doctor-data-table Appointment" id="Appointment">
+		<thead>
+			<tr>
+				<th>Sr. No.</th>
+				<th>Name</th>
+				<th>Time</th>
+				
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="appoinment : ${appoinmets}" >
+				<td th:text="${appoinment.id}"></td>
+				<td th:text="${appoinment.doctorName}"></td>
+				<td th:text="${appoinment.time}"></td>
+				<!-- <td>
+					<form th:action="@{/admin/doctors/{id}(id=${doctor.id})}"
+						method="post">
+						<input type="hidden" name="_method" value="put" /> <label>Name:</label>
+						<input type="text" name="name" th:value="${doctor.name}" /> <label>Specialization:</label>
+						<input type="text" name="specialization"
+							th:value="${doctor.specialization}" />
+						<button type="submit">Update</button>
+					</form>
+					<form th:action="@{/admin/doctors/{id}/delete(id=${doctor.id})}"
+						method="post">
+						<input type="hidden" name="_method" value="delete" />
+						<button type="submit">Delete</button>
+					</form>
+				</td> -->
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+	</table>
+</body>
+</html>

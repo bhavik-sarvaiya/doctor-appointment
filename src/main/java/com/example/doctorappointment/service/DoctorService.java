@@ -25,7 +25,15 @@ public class DoctorService {
     public Optional<Doctor> getDoctorById(Integer id) {
         return doctorRepository.findById(id);
     }
-
+    
+    public Doctor findByNameAndPassword(String name, String password) {
+        return doctorRepository.findByNameAndPassword(name,password);
+    }
+    
+    public Doctor findByName(String name) {
+        return doctorRepository.findByName(name);
+    }
+    
     public Doctor updateDoctor(Doctor doctor) {
         return doctorRepository.save(doctor);
     }

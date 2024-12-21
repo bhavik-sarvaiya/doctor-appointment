@@ -1,55 +1,113 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Manage Patients</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kk's HOSPITAL | Patient Registration Page</title>
+<link rel="stylesheet" type="text/css" href=""
+	th:href="@{/css/styles.css}" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
 <body>
-    <h1>Patients</h1>
-    <form th:action="@{/admin/patients}" method="post">
-        <label>Name:</label>
-        <input type="text" name="name" />
-        <label>Age:</label>
-        <input type="number" name="age" />
-        <label>Email:</label>
-        <input type="email" name="email" />
-        <button type="submit">Add Patient</button>
-    </form>
 
-    <h2>All Patients</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="patient : ${patients}">
-                <td th:text="${patient.id}"></td>
-                <td th:text="${patient.name}"></td>
-                <td th:text="${patient.age}"></td>
-                <td th:text="${patient.email}"></td>
-                <td>
-                    <form th:action="@{/admin/patients/{id}(id=${patient.id})}" method="post">
-                        <input type="hidden" name="_method" value="POST" />
-                        <label>Name:</label>
-                        <input type="text" name="name" th:value="${patient.name}" />
-                        <label>Age:</label>
-                        <input type="number" name="age" th:value="${patient.age}" />
-                        <label>Email:</label>
-                        <input type="email" name="email" th:value="${patient.email}" />
-                        <button type="submit">Update</button>
-                    </form>
-                    <form th:action="@{/admin/patients/{id}/delete(id=${patient.id})}" method="post">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+	<header class="header">
+		<div class="container">
+			<nav class="navbar">
+				<h1 class="logo">
+					<a th:href="@{/welcome}"><i class="fa-solid fa-hospital-user"></i>
+						KK's </a>
+				</h1>
+				<ul class="nav-items">
+					<li class="nav-item"><a href="" th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a href="" th:href="@{/about}">About
+							Us</a></li>
+					<li class="nav-item"><a href="" th:href="@{/contact}">Contact</a></li>
+				</ul>
+			</nav>
+
+			<div class="Pform">
+				<form th:action="@{/admin/patients}" method="post"
+					class="Pform-container">
+					<h1>Patient Doctor</h1>
+
+					<label for="name"><b>Name</b></label> <input type="text"
+						placeholder="Enter your name" name="name" required><br />
+					<label for="age"><b>Age</b></label> <input type="number"
+						placeholder="Enter Your Age" name="age" required><br /> <label
+						for="email"><b>Email</b></label> <input type="email"
+						placeholder="Enter Your Emailid" name="email" required><br />
+					<label for="password"><b>Set Password</b></label> <input
+						type="password" placeholder="Set Your Password" name="Password"
+						required><br />
+
+					<button type="submit" class="btn">Register</button>
+					<button type="button" class="btn cancel">Close</button>
+				</form>
+			</div>
+		</div>
+	</header>
+
+	<!--     <h1>Doctors</h1> -->
+	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
+	<!--         <label>Name:</label> -->
+	<!--         <input type="text" name="name" /> -->
+	<!--         <label>Specialization:</label> -->
+	<!--         <input type="text" name="specialization" /> -->
+	<!--         <button type="submit">Add Doctor</button> -->
+	<!--     </form> -->
+	<br>
+	<h2>All Patient</h2>
+	<table class="patient-data-table Appointment" id="Appointment">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Age</th>
+				<th>Email</th>
+				<th>Password</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="patient : ${patients}">
+				<td th:text="${patient.id}"></td>
+				<td th:text="${patient.name}"></td>
+				<td th:text="${patient.age}"></td>
+				<td th:text="${patient.email}"></td>
+				<td th:text="${patient.password}"></td>
+				<td>
+					<form id="update"
+						th:action="@{/admin/patients/{id}(id=${patient.id})}"
+						method="post" style="display: none">
+						<input type="hidden" name="_method" value="put" /> <label>Name:</label>
+						<input type="text" name="name" th:value="${patient.name}" /> <label>Age:</label>
+						<input type="number" name="age" th:value="${patient.age}" /> <label>Email:</label>
+						<input type="email" name="email" th:value="${patient.email}" /> <label>Password:</label>
+						<input type="password" name="password"
+							th:value="${patient.password}" />
+
+					</form>
+					<button type="submit" onclick="hideForm()">Update</button>
+					<form th:action="@{/admin/patients/{id}/delete(id=${patient.id})}"
+						method="post">
+						<input type="hidden" name="_method" value="delete" />
+						<button type="submit">Delete</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table>
+	</table>
+	<script type="text/javascript">
+		function hideForm() {
+			document.getElementById("update").style = "display:block"
+
+		}
+	</script>
 </body>
 </html>
+

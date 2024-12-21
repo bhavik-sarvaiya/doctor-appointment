@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -26,40 +27,38 @@ public class AdminController {
 	@Autowired
 	private PatientService patientService;
 
-	// For Appointments
-	@GetMapping("/appointments")
-	public String getAllAppointments(Model model) {
-		List<Appointment> appointments = appointmentService.getAllAppointments();
-		model.addAttribute("appointments", appointments);
-		return "redirect:/admin/appointments";
-	//	return "appointments"; //return hml appointment file
-	}
-	
-/**
-	@GetMapping("/appointments")
-	public String createAppointment(@ModelAttribute Appointment appointment) {
-		appointmentService.createAppointment(appointment);
-		return "redirect:/admin/appointments";
-	}
-	**/
-
-	@PostMapping("/appointments/{id}")
-	public String updateAppointment(@PathVariable Integer id, @ModelAttribute Appointment appointment,
-			@RequestParam("_method") String method) {
-		if ("put".equalsIgnoreCase(method)) {
-			appointment.setId(id);
-			appointmentService.updateAppointment(appointment);
-		}
-		return "redirect:/admin/appointments";
-	}
-
-	@PostMapping("/appointments/{id}/delete")
-	public String deleteAppointment(@PathVariable Integer id, @RequestParam("_method") String method) {
-		if ("delete".equalsIgnoreCase(method)) {
-			appointmentService.deleteAppointment(id);
-		}
-		return "redirect:/admin/appointments";
-	}
+	  // For Appointments
+	  
+//	  @GetMapping("/appointments") 
+//	  public String getAllAppointments(Model model) {
+//	  List<Appointment> appointments = appointmentService.getAllAppointments();
+//	  model.addAttribute("appointments", appointments); 
+//	  return "appointments";
+//	  }
+	  
+//	  @PostMapping("/appointments") 
+//	  public String createAppointment(@ModelAttribute
+//	  Appointment appointment ) { // System.out.println("in Appoinment creat");
+//	  System.out.println(appointment.getPatient());
+//	  System.out.println(appointment.getDoctor()); 
+//	  // appointmentService.createAppointment(patientID, doctorID); 
+//	  // appointmentService.createAppointment(appointment);
+//	  System.out.println(appointment); // return "redirect:/admin/appointments";
+//	  return "appointmentsDtl"; }
+	  
+//	  @PostMapping("/appointments/{id}") 
+//	  public String
+//	  updateAppointment(@PathVariable Integer id, @ModelAttribute Appointment
+//	  appointment, @RequestParam("_method") String method) { if ("put".equalsIgnoreCase(method))
+//	  { appointment.setId(id); appointmentService.updateAppointment(appointment); }
+//	  return "redirect:/admin/appointments"; }
+	  
+//	  @PostMapping("/appointments/{id}/delete") public String
+//	  deleteAppointment(@PathVariable Integer id, @RequestParam("_method") String
+//	  method) { if ("delete".equalsIgnoreCase(method)) {
+//	  appointmentService.deleteAppointment(id); } return
+//	  "redirect:/admin/appointments"; }
+	 
 
 	// For Doctors
 	@GetMapping("/doctors")

@@ -1,16 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Welcome Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kk's HOSPITAL | Welcome Page</title>
+<link rel="stylesheet" type="text/css" href=""
+	th:href="@{/css/styles.css}" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
 <body>
-    <h1>Welcome to the Admin Dashboard</h1>
-    <p>You are logged in as Admin.</p>
-    <ul>
-        <li><a th:href="@{/admin/appointments}">Manage Appointments</a></li>
-        <li><a th:href="@{/admin/doctors}">Manage Doctors</a></li>
-        <li><a th:href="@{/admin/patients}">Manage Patients</a></li>
-        <li><a th:href="@{/logout}">Logout</a></li>
-    </ul>
+	<!--     <h1>Welcome to the Admin Dashboard</h1> -->
+	<!--     <p>You are logged in as Admin.</p> -->
+	<!--     <ul> -->
+	<!--         <li><a th:href="@{/admin/appointments}">Manage Appointments</a></li> -->
+	<!--         <li><a th:href="@{/admin/doctors}">Manage Doctors</a></li> -->
+	<!--         <li><a th:href="@{/admin/patients}">Manage Patients</a></li> -->
+	<!--         <li><a th:href="@{/logout}">Logout</a></li> -->
+	<!--     </ul> -->
+
+	<header class="header">
+		<div class="container">
+			<nav class="navbar">
+				<h1 class="logo">
+					<a href="" th:href="@{/welcome}"><i
+						class="fa-solid fa-hospital-user"></i> KK's </a>
+				</h1>
+				<ul class="nav-items">
+					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
+					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
+					<!-- Show Login or Username based on whether user is logged in -->
+                    <li class="nav-item" th:if="${username == null}" onclick="openForm()"><a>Login</a></li>
+                    <li class="nav-item" th:if="${username != null}">
+                        <span style="color:white">Welcome, <span th:text="${username}"></span></span>
+                    </li>
+                    <li class="nav-item" th:if="${username != null}">
+                        <a th:href="@{/logout}">logout</a>
+                    </li>
+				</ul>
+			</nav>
+
+			<div class="form-popup" id="myForm">
+				<form th:action="@{/login}" method="post" class="form-container">
+					<h1>Login</h1>
+
+					<label for="name"><b>Name</b></label> <input type="text"
+						placeholder="Enter Name" name="name" required> <label
+						for="password"><b>Password</b></label> <input type="password"
+						placeholder="Enter Password" name="password" required>
+
+					<button type="submit" class="btn">Login</button>
+					<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+				</form>
+			</div>
+
+		</div>
+
+		<!-- Display message if it exists -->
+		<div th:if="${message}" style="color: red; text-align: center;">
+			<p th:text="${message}"></p>
+		</div>
+
+		<div class="header-content">
+
+
+
+			<h1>
+				<i class="fa-regular fa-hospital"></i>
+			</h1>
+			<h1 class="lg-heading light-text">Welcome to KK's Hospital</h1>
+			<p class="light-text typing-container">A healthy outside starts
+				from the inside</p>
+		</div>
+
+		<div class="cards">
+			<div class="card card1">
+				<img class="card-img-top" src="../img/patient and dr.jpeg"
+					alt="Card image">
+				<div class="card-body">
+					<h4 class="card-title">For Patients</h4>
+					<p class="card-text">There is one consolation in being sick;
+						and that is the possibility that you may recover to a better state
+						than you were ever in before.</p>
+					<a th:href="@{/admin/patients}" class="btn btn-primary zoom">Patients
+						Registration</a>
+				</div>
+			</div>
+
+			<div class="card card2">
+				<img class="card-img-top" src="../img/doctor.png" alt="Card image">
+				<div class="card-body">
+					<h4 class="card-title">For Doctors</h4>
+					<p class="card-text">To solve a difficult problem in medicine,
+						don't study it directly, but rather pursue a curiosity about
+						nature and the rest will follow. Do basic research.</p>
+					<a th:href="@{/admin/doctors}" class="btn btn-primary zoom">Doctor
+						Registration</a>
+				</div>
+			</div>
+		</div> <br>
+
+		<div id="lgText" th:if="${username == null}"><p style="text-align: center;">Please Login to book appoinment.</p></div>
+		<div class="center-button" id="appBtn" th:if="${username != null}">
+			<a href="" th:href="@{appointment/create}"
+				class="btn btn-appointment zoom" onclick="checklg()">Make an
+				Appointment</a>
+		</div>
+
+		<section class="footer">
+			<div class="social-media-links">
+				<i class="fa-brands fa-facebook fa-2x"></i> <i
+					class="fa-brands fa-twitter fa-2x"></i> <i
+					class="fa-brands fa-instagram fa-2x"></i>
+			</div>
+
+			<p>World Of Hospitals &copy; 2020, All Rights Reserved</p>
+		</section>
+	</header>
+
+<script>
+     function openForm() {
+        document.getElementById("myForm").style.display = "block";
+    }
+
+    function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+    }
+</script>
 </body>
 </html>
