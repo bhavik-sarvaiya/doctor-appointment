@@ -8,7 +8,7 @@
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-	<header class="header">
+	<header class="header2">
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
@@ -39,33 +39,54 @@
 		</h1>
 		<br>
 	</div> -->
-	
+
 	<div class="Dform">
 		<h1>Book an Appointment</h1>
 		<form action="/appointment/create" method="post">
-			<label for="patient">Patient:</label> 
-			<!-- <select name="patientId"
-				>
-				<option th:text="${username}" th:value="${userId}"
-					></option>
-			</select> <br> -->
-			<input name="patientName" th:value="${username}" readonly="readonly"><br>
-			<input type="hidden" name="patientId" th:value="${userId}"><br>
+
+			<label for="patient">Patient:</label> <input name="patientName"
+				th:value="${username}" readonly="readonly"><br> <input
+				type="hidden" name="patientId" th:value="${userId}"><br>
 			<br> <label for="doctor">Doctor:</label> <select name="doctorId"
 				required>
 				<option th:each="doctor : ${doctors}" th:value="${doctor.id}"
 					th:text="${doctor.name}"></option>
-			</select> <br>
-			<br> <label for="appointmentTime">Appointment Date and
-				Time:</label> <input type="datetime-local" name="appointmentTime" required />
-			<br>
-			<br>
+			</select> <br> <br> <label for="appointmentDate">Appointment
+				Date :</label> <input type="date" name="appointmentDate" required /> <label
+				for="appointmentSlot">Select Appoinment Slot:</label> <select
+				name="appointmentSlot" id="appointmentSlot" required>
+				<option value="9AM-12PM">9AM-12PM</option>
+				<option value="4PM-9PM">4PM-9PM</option>
+			</select> <br> <br>
 
 			<button type="submit">Book Appointment</button>
+
 		</form>
+		<br>
 	</div>
 
+	<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const appointmentDateInput = document.querySelector('input[name="appointmentDate"]');
 
+            // Disable past dates and Sundays
+            appointmentDateInput.addEventListener("input", function () {
+                const selectedDate = new Date(this.value);
+                const today = new Date();
+
+                // Reset time components for accurate comparison
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    alert("Past dates are not allowed!");
+                    this.value = "";
+                } else if (selectedDate.getDay() === 0) {
+                    alert("Appointments cannot be booked on Sundays!");
+                    this.value = "";
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

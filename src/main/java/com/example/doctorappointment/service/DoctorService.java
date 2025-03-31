@@ -19,7 +19,7 @@ public class DoctorService {
     }
 
     public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
+        return (doctorRepository.findAll());
     }
 
     public Optional<Doctor> getDoctorById(Integer id) {

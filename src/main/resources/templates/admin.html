@@ -3,62 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kk's HOSPITAL | Patient Registration Page</title>
+<title>Kk's HOSPITAL | Welcome to KK's hospital patient</title>
 <link rel="stylesheet" type="text/css" href=""
 	th:href="@{/css/styles.css}" />
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 </head>
-<body>
 
-	<header class="header">
+<body>
+	<header class="header2">
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
-					<a th:href="@{/welcome}"><i class="fa-solid fa-hospital-user"></i>
+					<a th:href="@{/p_welcome}"><i class="fa-solid fa-hospital-user"></i>
 						KK's </a>
 				</h1>
 				<ul class="nav-items">
-					<li class="nav-item"><a href="" th:href="@{/welcome}">Home</a></li>
-					<li class="nav-item"><a href="" th:href="@{/about}">About
-							Us</a></li>
-					<li class="nav-item"><a href="" th:href="@{/contact}">Contact</a></li>
+					<li class="nav-item"><a th:href="@{/p_welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
+					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
+					<li class="nav-item" th:if="${username == null}"
+						onclick="openForm()"><a>Login</a></li>
+					<li class="nav-item" th:if="${username != null}"><span
+						style="color: white">Welcome, <span th:text="${username}"></span></span>
+					</li>
+					<li class="nav-item" th:if="${username != null}"><a
+						th:href="@{/logout}">logout</a></li>
 				</ul>
 			</nav>
-
-			<div class="Pform">
-				<form th:action="@{/admin/patients}" method="post"
-					class="Pform-container">
-					<h1>Patient Registration</h1>
-
-					<label for="name"><b>Name</b></label> <input type="text"
-						placeholder="Enter your name" name="name" required><br />
-					<label for="age"><b>Age</b></label> <input type="number"
-						placeholder="Enter Your Age" name="age" required><br /> <label
-						for="email"><b>Email</b></label> <input type="email"
-						placeholder="Enter Your Emailid" name="email" required><br />
-					<label for="password"><b>Set Password</b></label> <input
-						type="password" placeholder="Set Your Password" name="Password"
-						required><br />
-
-					<button type="submit" class="btn">Register</button>
-					<button type="button" class="btn cancel">Close</button>
-				</form>
-			</div>
 		</div>
 	</header>
 
-	<!--     <h1>Doctors</h1> -->
-	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
-	<!--         <label>Name:</label> -->
-	<!--         <input type="text" name="name" /> -->
-	<!--         <label>Specialization:</label> -->
-	<!--         <input type="text" name="specialization" /> -->
-	<!--         <button type="submit">Add Doctor</button> -->
-	<!--     </form> -->
 	<br>
-	<h2>All Patient</h2>
+	
+
+<h2>All Patient</h2>
 	<table class="patient-data-table Appointment" id="Appointment">
 		<thead>
 			<tr>
@@ -113,4 +92,3 @@
 	</script>
 </body>
 </html>
-

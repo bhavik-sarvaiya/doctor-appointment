@@ -8,77 +8,212 @@
 	th:href="@{/css/styles.css}" />
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 </head>
-<body>
 
-	<header class="header">
+<body>
+	<header class="header2">
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
-					<a th:href="@{/welcome}"><i
-						class="fa-solid fa-hospital-user"></i> KK's </a>
+					<a th:href="@{/p_welcome}"><i class="fa-solid fa-hospital-user"></i>
+						KK's </a>
 				</h1>
 				<ul class="nav-items">
-					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/p_welcome}">Home</a></li>
 					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
 					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
-					<li class="nav-item"><span th:text="${patient.name}"></span></li>
+					<li class="nav-item" th:if="${username == null}"
+						onclick="openForm()"><a>Login</a></li>
+					<li class="nav-item" th:if="${username != null}"><span
+						style="color: white">Welcome, <span th:text="${username}"></span></span>
+					</li>
+					<li class="nav-item" th:if="${username != null}"><a
+						th:href="@{/logout}">logout</a></li>
 				</ul>
 			</nav>
-
-			<div class="Pform">
-				<h1>
-					Welcome to KK's hospital <span th:text="${patient.name}"></span>.
-				</h1>
-			</div>
 		</div>
 	</header>
 
-	<!--     <h1>Doctors</h1> -->
-	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
-	<!--         <label>Name:</label> -->
-	<!--         <input type="text" name="name" /> -->
-	<!--         <label>Specialization:</label> -->
-	<!--         <input type="text" name="specialization" /> -->
-	<!--         <button type="submit">Add Doctor</button> -->
-	<!--     </form> -->
 	<br>
-	<h2>Your today's appoinment</h2>
-	<table class="doctor-data-table Appointment" id="Appointment">
-		<thead>
-			<tr>
-				<th>Sr. No.</th>
-				<th>Name</th>
-				<th>Time</th>
-				
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="appoinment : ${appoinmets}" >
-				<td th:text="${appoinment.id}"></td>
-				<td th:text="${appoinment.doctorName}"></td>
-				<td th:text="${appoinment.time}"></td>
-				<!-- <td>
-					<form th:action="@{/admin/doctors/{id}(id=${doctor.id})}"
-						method="post">
-						<input type="hidden" name="_method" value="put" /> <label>Name:</label>
-						<input type="text" name="name" th:value="${doctor.name}" /> <label>Specialization:</label>
-						<input type="text" name="specialization"
-							th:value="${doctor.specialization}" />
-						<button type="submit">Update</button>
-					</form>
-					<form th:action="@{/admin/doctors/{id}/delete(id=${doctor.id})}"
-						method="post">
-						<input type="hidden" name="_method" value="delete" />
-						<button type="submit">Delete</button>
-					</form>
-				</td> -->
-			</tr>
-		</tbody>
-	</table>
+	
 
-	<table>
-	</table>
+
+<!-- Table of Appointments -->
+<div id="table-container">
+
+<table class="doctor-data-table Appointment">
+    <thead>
+        <tr>
+            <th>Sr. No.</th>
+            <th>Appointment Date</th>
+            <th>Appointment Time</th>
+            <th>Doctor</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="appointment, iterStat : ${appointments}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${appointment.appointmentDate}"></td>
+            <td th:text="${appointment.appointmentSlot}"></td>
+<!--             <td th:text="${appointment.doctor.name}"></td>
+ -->          
+   <td th:text="${appointment.doctor != null ? appointment.doctor.name : 'No Doctor Assigned'}"></td>
+            
+            <td>
+                <!-- Edit Button to Open Modal -->
+               <button type="button" class="edit-btn" th:data-id="${appointment.id}">Edit</button>               
+            </td>
+            <td>
+                <form th:action="@{/appointment/deleteap/{id}(id=${appointment.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<!-- Update Appointment Modal (Initially Hidden) -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h1>Update Appointment</h1>
+
+        <form id="updateForm" action="#" method="post">  <!-- Initially no action -->
+            <input type="hidden" name="_method" value="put">  <!-- Simulates PUT -->
+            <input type="hidden" name="appointmentId" id="appointmentId">
+
+            <label for="appointmentDate">Appointment Date:</label>
+            <input type="date" name="appointmentDate" id="appointmentDate" required><br>
+
+            <label for="appointmentSlot">Select Appointment Slot:</label>
+            <select name="appointmentSlot" id="appointmentSlot" required>
+                <option value="9AM-12PM">9AM-12PM</option>
+                <option value="4PM-9PM">4PM-9PM</option>
+            </select><br>
+
+            <label for="doctor">Doctor:</label>
+            <select name="doctorId" id="doctorId" required>
+                <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.name}"></option>
+            </select><br>
+
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</div>
+
+
+		<div class="pagination" id="pagination-container">
+		<input type="hidden" id="totalPages" th:value="${totalPages}" />
+		<span th:if="${currentPage > 0}"> <a href="#"
+				th:data-page="${currentPage - 1}" class="pagination-link">Previous</a>
+			</span> <span th:if="${currentPage < totalPages - 1}"> <a href="#"
+				th:data-page="${currentPage + 1}" class="pagination-link">Next</a>
+			</span><br> <span>Page <span th:text="${currentPage + 1}"></span>
+				of <span th:text="${totalPages}"></span>
+			</span>
+		</div>
+
+
+	<div class="center-button" id="appBtn" th:if="${username != null}">
+		<a href="" th:href="@{/appointment/create}" id="appointmentBtn"
+			class="btn btn-appointment zoom">Make an Appointment</a>
+	</div>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+	    const modal = document.getElementById("updateModal");
+	    const closeModalBtn = document.querySelector(".close-btn");
+	    const updateForm = document.getElementById("updateForm");
+
+	    // Add event listener to each edit button
+	    document.querySelectorAll('.edit-btn').forEach(button => {
+	        button.addEventListener('click', function () {
+	            let appointmentId = this.getAttribute('data-id');
+	            
+
+	            // Get the appointment details from the row
+	            let row = this.closest("tr");
+	            let appointmentDate = row.cells[1].textContent;
+	            let appointmentSlot = row.cells[2].textContent;
+	            let doctorName = row.cells[3].textContent;
+
+	            // Set values in the modal
+	            document.getElementById("appointmentId").value = appointmentId;
+	            document.getElementById("appointmentDate").value = appointmentDate;
+	            document.getElementById("appointmentSlot").value = appointmentSlot;
+
+	            // Select the correct doctor in the dropdown
+	            let doctorDropdown = document.getElementById("doctorId");
+	            for (let option of doctorDropdown.options) {
+	                if (option.text === doctorName) {
+	                    option.selected = true;
+	                    break;
+	                }
+	            }
+
+	            // Update form action with the correct appointment ID
+	            updateForm.action = `/appointment/updateap/${appointmentId}`;
+
+	            // Show modal
+	            modal.style.display = "block";
+	        });
+	    });
+
+	    // Close modal when "X" is clicked
+	    closeModalBtn.addEventListener("click", function () {
+	        modal.style.display = "none";
+	    });
+
+	    // Close modal when clicking outside the modal
+	    window.addEventListener("click", function (event) {
+	        if (event.target === modal) {
+	            modal.style.display = "none";
+	        }
+	    });
+
+	    function loadPage(page) {
+	        fetch(`/appointment/${page}`)
+	            .then(response => response.text())
+	            .then(data => {
+	                document.getElementById('table-container').innerHTML = data;
+	                updatePagination(page); // Update pagination dynamically
+
+	                // 🔥 Reattach event listeners after data reload
+	                attachEditButtonListeners();
+	            })
+	            .catch(error => console.error('Error fetching appointments:', error));
+	    }
+
+	    function updatePagination(currentPage) {
+	        // Get total pages from the hidden Thymeleaf variable or server response
+	        const totalPages = document.getElementById('totalPages')?.value || 1;
+
+	        const paginationContainer = document.getElementById('pagination-container');
+	        paginationContainer.innerHTML = ''; // Clear existing pagination
+
+	        attachPaginationListeners(); // Reattach listeners after updating pagination
+	    }
+
+	    function attachPaginationListeners() {
+	        document.querySelectorAll('.pagination-link').forEach(link => {
+	            link.addEventListener('click', function (e) {
+	                e.preventDefault();
+	                const page = this.getAttribute('data-page');
+	                loadPage(page); // Load the selected page
+	            });
+	        });
+	    }
+
+	    // Initialize pagination on first load
+	    attachPaginationListeners();
+
+	});
+
+</script>
+
 </body>
 </html>

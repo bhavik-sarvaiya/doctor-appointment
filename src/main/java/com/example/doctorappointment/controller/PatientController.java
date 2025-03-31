@@ -15,11 +15,17 @@ public class PatientController {
 
     @Autowired
     private PatientService patientService;
+    
+//    @Autowired
+//    private DoctorService doctorService;     
 
     @GetMapping
     public String listPatients(Model model) {
         List<Patient> patients = patientService.getAllPatients();
-        model.addAttribute("patients", patients);
+//        List<Doctor> doctors = doctorService.getAllDoctors();
+       model.addAttribute("patients", patients);
+//        model.addAttribute("doctors", doctors);
+ 
         return "patient-list";  // Thymeleaf template to display patients
     }
 
