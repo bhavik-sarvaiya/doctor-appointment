@@ -3,7 +3,6 @@ package com.example.doctorappointment.controller;
 import com.example.doctorappointment.model.Appointment;
 import com.example.doctorappointment.model.Doctor;
 import com.example.doctorappointment.model.Patient;
-import com.example.doctorappointment.repository.AppointmentRepository;
 import com.example.doctorappointment.service.AppointmentService;
 import com.example.doctorappointment.service.DoctorService;
 import com.example.doctorappointment.service.PatientService;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Pageable;
 
-import java.net.http.HttpClient.Redirect;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +42,7 @@ public class AppointmentController {
 		System.out.println("username :" +username);
 		Integer userId = (Integer) session.getAttribute("userId");
 		System.out.println("userId : "+userId);
-	    Optional<Appointment> appointments = appointmentService.getAppointmentById(userId);
+//	    Optional<Appointment> appointment = appointmentService.getAppointmentById(userId);
 	    Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
         Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
 	    List<Doctor> doctors = doctorService.getAllDoctors();
@@ -58,18 +55,19 @@ public class AppointmentController {
         
         Patient patient2 = patientService.findByName(username);
         session.setAttribute("username", patient2.getName());
-        session.setAttribute("userDId", patient2.getId());
+        session.setAttribute("userId", patient2.getId());
 
 		model.addAttribute("username", patient2.getName());
 		model.addAttribute("userId", patient2.getId());
 	    
-        return "plogin"; // Make sure this is the correct template name
+//       return "plogin"; // Make sure this is the correct template name
+       return "plogin :: #table-container"; // Make sure this is the correct template name
 	}
 
 
 	@GetMapping("/create")
 	public String createAppointmentForm(Model model, HttpSession session, @ModelAttribute Patient patient) {
-//		System.out.println("Loading createAppointmentForm");
+		System.out.println("Loading get createAppointmentForm");
 		// Ensure no null values
 		String username = (String) session.getAttribute("username");
 		Integer userId = (Integer) session.getAttribute("userId");
@@ -90,26 +88,25 @@ public class AppointmentController {
 		model.addAttribute("username", username);
 		model.addAttribute("userId", userId);
 		model.addAttribute("doctors", doctors);
-		System.out.println(model.addAttribute("doctors", doctorService.getAllDoctors()));
+//		System.out.println(model.addAttribute("doctors", doctorService.getAllDoctors()));
 
 //		System.out.println(model.addAttribute("patients", patientService.getAllPatients()));
 		return "appointments";
 	}
 
 	@GetMapping("/{page}")
-	public String listAppointments(Model model, @PathVariable("page") int page, HttpSession session, Patient patient,
-			Doctor doctor) {
+	public String listAppointments(Model model, @PathVariable("page") int page, HttpSession session) {
 		System.out.println("Loading createAppointmentForm in appointmentsDtl");
 		String username1 = (String) session.getAttribute("username");
 		System.out.println(username1);
 		List<Doctor> doctors = doctorService.getAllDoctors();
 		System.out.println("doctors :" + doctors);
-
 		
 		if (Objects.nonNull(patientService.findByName(username1))) {
 			model.addAttribute("doctors", doctors);
 			System.out.println("list app in patient");
-			Pageable pageable = (Pageable) PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+			
+			Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 			Integer userId = (Integer) session.getAttribute("userId");
 			Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
 			model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
@@ -120,11 +117,13 @@ public class AppointmentController {
 			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
 			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
-			return "appointmentTable"; // Return the table fragment
+//			return "appointmentTable"; // Return the table fragment
+//			return "appointments"; // Return the table fragment
+			return "plogin :: #table-container"; // Return the table fragment
 		} else if (Objects.nonNull(doctorService.findByName(username1))) {
 			model.addAttribute("doctors", doctors);
 			System.out.println("list app in doctor");
-			Pageable pageable = (Pageable) PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+			Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 			Integer userId = (Integer) session.getAttribute("userDId");
 			Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByDoctoradPage(userId, pageable);
 			model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
@@ -135,7 +134,9 @@ public class AppointmentController {
 			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
 			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
-			return "appointmentsDtl"; // Return the table fragment
+//			return "appointmentsDtl"; // Return the table fragment
+//			return "appointments :: #table-container";
+			return "dlogin :: #table-container";
 		} else {
 			return "welcome";
 		}
@@ -145,12 +146,13 @@ public class AppointmentController {
 	public String createAppointment(@RequestParam Integer patientId, @RequestParam Integer doctorId, Patient patient,
 			@RequestParam String appointmentSlot, @RequestParam LocalDate appointmentDate, HttpSession session,
 			@RequestParam(defaultValue = "0") int page, Model model) {
+		System.out.println("Loading post createAppointmentForm");
 		appointmentService.createAppointment(patientId, doctorId, appointmentDate, appointmentSlot);
 		Integer userId = (Integer) session.getAttribute("userId");
 		String userName = (String) session.getAttribute("username");
 		System.out.println(userName);
 		model.addAttribute("username", userName);
-		Pageable pageable = (Pageable) PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 		Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
 		model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
 		System.out.println("appointments" + appointmentsPage.getContent());
@@ -170,93 +172,6 @@ public class AppointmentController {
 	public List<Appointment> getAllAppointments() {
 		return appointmentService.getAllAppointments();
 	}
-
-//	// Update appointment
-//	@PutMapping("/updateap/{id}")
-//	public String updateAppointment(@PathVariable Integer id,
-//			@RequestParam("doctorId") Integer doctorId, 
-//	        @RequestParam("appointmentSlot") String appointmentSlot,
-//	        @RequestParam("appointmentDate") LocalDate appointmentDate,
-//	        Model model,
-//			@RequestParam(defaultValue = "0") int page, 
-//			HttpSession session) {
-////		appointment.setId(id);
-////		return appointmentService.updateAppointment(appointment);
-//		System.out.println("In update start");
-//		Optional<Appointment> existingAppointmentOpt = appointmentService.getAppointmentById(id);
-//
-//		if (existingAppointmentOpt.isPresent()) {
-//			Appointment existingAppointment = existingAppointmentOpt.get();
-//			
-//			Integer userId = (Integer) session.getAttribute("userId");
-//			System.out.println("userId : " + userId);
-//			String userName = (String) session.getAttribute("username");
-//			System.out.println("username : " + userName);
-//			Pageable pageable = (Pageable) PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
-//			Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
-//			model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
-//			System.out.println("appointments" + appointmentsPage.getContent());
-//			model.addAttribute("currentPage", page); // Current page number
-//			System.out.println("currentPage : " + page);
-//			model.addAttribute("totalPages", appointmentsPage.getTotalPages()); // Total pages
-//			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
-//			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
-//			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
-//
-//			// Update the necessary fields
-//			existingAppointment.setPatient(existingAppointment.getPatient());
-//
-//	        // Retrieve doctor details
-//			 Optional<Doctor> optionalDoctor = doctorService.getDoctorById(doctorId);
-//		        if (optionalDoctor.isPresent()) {
-//		            existingAppointment.setDoctor(optionalDoctor.get());
-//		        } else if (existingAppointment.getDoctor() != null) {
-//		            // Retain existing doctor if no new doctor is selected
-//		            System.out.println("Retaining existing doctor: " + existingAppointment.getDoctor().getName());
-//		        } else {
-//		            throw new RuntimeException("Doctor not found: " + doctorId);
-//		        }
-//		        
-////			existingAppointment.setDoctor(updatedAppointment.getDoctor());
-//			existingAppointment.setAppointmentSlot(appointmentSlot);
-//			existingAppointment.setAppointmentDate(appointmentDate);
-//			
-//			System.out.println("Updating appointment:");
-//	        System.out.println("Doctor: " + (existingAppointment.getDoctor() != null ? existingAppointment.getDoctor().getName() : "No Doctor Assigned"));
-//	        System.out.println("Slot: " + appointmentSlot);
-//	        System.out.println("Date: " + appointmentDate);
-//
-//			// Save the updated appointment
-//			appointmentService.updateAppointment(existingAppointment);
-//			
-//			System.out.println("go to plogin");
-//			
-//			// Refresh appointment list
-//		    Integer userId1 = (Integer) session.getAttribute("userId");
-//		    Pageable pageable1 = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("appointmentDate")));
-//		    Page<Appointment> appointmentsPage1 = appointmentService.getAppointmentsByPatientnadPage(userId1, pageable1);
-//		    model.addAttribute("appointments", appointmentsPage1.getContent());
-////			Patient pId = patientService.findByNameAndPassword(patient.getName(), patient.getPassword());
-//			// Re-fetch doctors list
-//			List<Doctor> doctors = doctorService.getAllDoctors();
-//			System.out.println("doctors :" + doctors);
-//			model.addAttribute("doctors",doctors);
-//			
-//			// Update session attributes
-//			session.setAttribute("username", existingAppointment.getPatient().getName());
-//			session.setAttribute("userId", existingAppointment.getId());
-//			System.out.println("PId :" + existingAppointment.getId());
-//			System.out.println("PName :" + existingAppointment.getPatient().getName());
-//			
-//			// Add attributes for reloading page
-//			model.addAttribute("username", existingAppointment.getPatient().getName());
-//			model.addAttribute("userId", existingAppointment.getId());
-//			
-//			return "plogin";
-//		} else {
-//			return ("Appointment not found");
-//		}
-//	}
 	
 	@PutMapping("/updateap/{id}")
 	public String updateAppointment(
@@ -268,6 +183,9 @@ public class AppointmentController {
 	        Model model, HttpSession session) {
 
 	    System.out.println("Updating appointment with ID: " + id);
+	    System.out.println("Doctor ID: " + doctorId);
+	    System.out.println("Slot: " + appointmentSlot);
+	    System.out.println("Date: " + appointmentDate);
 	    
 	    // 🔹 Print all appointments before update
 	    List<Appointment> allAppointmentsBefore = appointmentService.getAllAppointments();
@@ -342,15 +260,17 @@ public class AppointmentController {
 	    model.addAttribute("doctors", doctors);
 		// Update session attributes
 		session.setAttribute("username", existingAppointment.getPatient().getName());
-		session.setAttribute("userId", existingAppointment.getId());
-		System.out.println("PId :" + existingAppointment.getId());
+		session.setAttribute("userId", existingAppointment.getPatient().getId());
+		System.out.println("PId :" + existingAppointment.getPatient().getId());
 		System.out.println("PName :" + existingAppointment.getPatient().getName());
 		
 		// Add attributes for reloading page
 		model.addAttribute("username", existingAppointment.getPatient().getName());
 		model.addAttribute("userId", existingAppointment.getId());
 
-	    return "plogin"; 
+//	    return "redirect:/appointment/appointments"; 
+		return "plogin";
+//		return "plogin :: #table-container"; // Return the table fragment
 	}
 
 
@@ -364,7 +284,7 @@ public class AppointmentController {
 		
 		 System.out.println("Deleting appointment with ID: " + id);
 		
-		Pageable pageable = (Pageable) PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 		Integer userId = (Integer) session.getAttribute("userId");
 		System.out.println("userId : " + userId);
 		String userName = (String) session.getAttribute("username");
@@ -379,8 +299,6 @@ public class AppointmentController {
 		model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 		System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
 		
-		
-
 		appointmentService.deleteAppointment(id);
 		redirectAttributes.addFlashAttribute("message", "Appointment deleted successfully!");
 		System.out.println("in controller del");

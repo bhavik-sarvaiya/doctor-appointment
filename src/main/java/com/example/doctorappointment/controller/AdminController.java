@@ -1,5 +1,6 @@
 package com.example.doctorappointment.controller;
 
+import com.example.doctorappointment.model.Admin;
 import com.example.doctorappointment.model.Appointment;
 import com.example.doctorappointment.model.Doctor;
 import com.example.doctorappointment.model.Patient;
@@ -31,6 +32,19 @@ public class AdminController {
 
 	@Autowired
 	private PatientService patientService;
+	
+	
+	@GetMapping("")
+	public String getAllData( Model model) {
+		System.out.println("in getalldata admin....");
+		List<Patient> patients = patientService.getAllPatients();	
+		System.out.println("patients : " + patients);
+		List<Doctor> doctors = doctorService.getAllDoctors();
+		System.out.println("doctors: " + doctors);
+		model.addAttribute("patients",patients);
+		model.addAttribute("doctors",doctors);
+		return "admin";
+	}
 
 	// For Appointments
 
@@ -57,7 +71,9 @@ public class AdminController {
 	        existingAppointment.setAppointmentDate(appointmentDate);
 
 	        appointmentService.updateAppointment(existingAppointment);
-	        return "redirect:/appointment/0";  // Redirect to avoid resubmission issues
+//	        return "redirect:/appointment/0";  // Redirect to avoid resubmission issues
+	        return "redirect:/admin";  // Redirect to avoid resubmission issues
+
 	    } else {
 	        return "error";  // Return error page if appointment is not found
 	    }
@@ -87,13 +103,20 @@ public class AdminController {
 	}
 
 	@PostMapping("/doctors/{id}")
-	public String updateDoctor(@PathVariable Integer id, @ModelAttribute Doctor doctor,
-			@RequestParam("_method") String method) {
-		if ("put".equalsIgnoreCase(method)) {
-			doctor.setId(id);
-			doctorService.updateDoctor(doctor);
-		}
-		return "redirect:/admin/doctors";
+	public String updateDoctor(@PathVariable Integer id, 
+			@RequestParam String name, 
+			@RequestParam String specialization) {
+		System.out.println("in doctor update.....");
+		Optional<Doctor> optionalDoctor = doctorService.getDoctorById(id);
+	    if (optionalDoctor.isPresent()) {
+	        Doctor doctor = optionalDoctor.get();
+	        doctor.setName(name);
+	        doctor.setSpecialization(specialization);
+	        doctorService.updateDoctor(doctor); // Ensure this method saves changes
+	    } else {
+	        return "error"; // Handle case when doctor is not found
+	    }
+		return "redirect:/admin";
 	}
 
 	@PostMapping("/doctors/{id}/delete")
@@ -114,15 +137,30 @@ public class AdminController {
 
 	@PostMapping("/patients")
 	public String createPatient(@ModelAttribute Patient patient) {
+		System.out.println("In createPatient");
 		patientService.createPatient(patient);
 		return "redirect:/admin/patients";
 	}
 
 	@PostMapping("/patients/{id}")
-	public String updatePatient(@PathVariable Integer id, @ModelAttribute Patient patient) {
-		patient.setId(id);
-		patientService.updatePatient(patient);
-		return "redirect:/admin/patients";
+	public String updatePatient(@PathVariable Integer id, 
+            @RequestParam String name, 
+            @RequestParam String age, 
+            @RequestParam String email, 
+            @RequestParam String password) {
+		System.out.println("in patient update.....");
+		Optional<Patient> optionalPatient = patientService.getPatientById(id);
+	    if (optionalPatient.isPresent()) {
+	        Patient patient = optionalPatient.get();
+	        patient.setName(name);
+	        patient.setAge(age);
+	        patient.setEmail(email);
+	        patient.setPassword(password);
+	        patientService.updatePatient(patient); // Ensure this method saves changes
+	    } else {
+	        return "error"; // Handle case when patient is not found
+	    }
+	    return "redirect:/admin";
 	}
 
 	@PostMapping("/patients/{id}/delete")

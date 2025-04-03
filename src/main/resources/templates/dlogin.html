@@ -23,12 +23,12 @@
 					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
 					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
 					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
-					<li class="nav-item" th:if="${username == null}"
+					<li class="nav-item" th:if="${session.username == null}"
 						onclick="openForm()"><a>Login</a></li>
-					<li class="nav-item" th:if="${username != null}"><span
-						style="color: white">Welcome, <span th:text="${username}"></span></span>
+					<li class="nav-item" th:if="${session.username != null}"><span
+						style="color: white">Welcome, <span th:text="${session.username}"></span></span>
 					</li>
-					<li class="nav-item" th:if="${username != null}"><a
+					<li class="nav-item" th:if="${session.username != null}"><a
 						th:href="@{/logout}">logout</a></li>
 				</ul>
 			</nav>

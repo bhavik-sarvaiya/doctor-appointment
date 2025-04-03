@@ -74,8 +74,10 @@ public class Login {
 		// Authenticate admin
 		Admin authenticatedAdmin = adminService.findByNameAndPassword(admin.getName(), admin.getPassword());
 		if (authenticatedAdmin != null) {
-			session.setAttribute("adminUsername", authenticatedAdmin.getName());
-			session.setAttribute("adminId", authenticatedAdmin.getId());
+			System.out.println("in authenticatedAdmin......");
+			session.setAttribute("username", authenticatedAdmin.getName());
+			System.out.println("usernameAdmin : "+ authenticatedAdmin.getName());
+			session.setAttribute("userDId", authenticatedAdmin.getId());
 			return loadAdminDashboard(authenticatedAdmin, model, session);
 		}
 
@@ -102,11 +104,13 @@ public class Login {
 
 	private String loadAdminDashboard(Admin admin, Model model, HttpSession session) {
 //		model.addAttribute("admin", admin);
-		 
+		 System.out.println("in loadAdminDashboard........");
 		List<Patient> patients = patientService.getAllPatients();	
+		List<Doctor> doctors = doctorService.getAllDoctors();	
 		
 		model.addAttribute("admin", admin);
 		model.addAttribute("patients", patients);
+		model.addAttribute("doctors", doctors);
 		return "admin";
 	}
 
