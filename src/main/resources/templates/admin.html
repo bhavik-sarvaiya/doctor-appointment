@@ -8,6 +8,59 @@
 	th:href="@{/css/styles.css}" />
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+.success-message {
+	background-color: #4CAF50;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	margin: 10px;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+.delete-message {
+	background-color: #E57373;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	margin: 10px;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+.Pform-container, .Dform-container {
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    margin: auto;
+}
+
+.Pform, .Dform {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 10px;
+}
+
+.btn {
+    padding: 8px 16px;
+    margin-top: 10px;
+}
+
+.cancel {
+    background-color: red;
+    color: white;
+}
+</style>
+
 </head>
 
 <body>
@@ -15,18 +68,18 @@
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
-					<a th:href="@{/welcome}"><i class="fa-solid fa-hospital-user"></i>
+					<a th:href="@{/a_welcome}"><i class="fa-solid fa-hospital-user"></i>
 						KK's </a>
 				</h1>
 				<ul class="nav-items">
-					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/a_welcome}">Home</a></li>
 					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
 					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
 					<li class="nav-item" th:if="${session.username == null}"
 						onclick="openForm()"><a>Login</a></li>
 					<li class="nav-item" th:if="${session.username != null}"><span
-						style="color: white">Welcome, <span th:text="${session.username}"></span></span>
-					</li>
+						style="color: white">Welcome, <span
+							th:text="${session.username}"></span></span></li>
 					<li class="nav-item" th:if="${session.username != null}"><a
 						th:href="@{/logout}">logout</a></li>
 				</ul>
@@ -35,10 +88,60 @@
 	</header>
 
 	<br>
+
+
+	<!-- Success Message -->
+	<div th:if="${successMessage}" class="success-message"
+		th:text="${successMessage}"></div>
+		
+		<!-- Success Message -->
+	<div th:if="${deleteMessage}" class="delete-message"
+		th:text="${deleteMessage}"></div>
+
+	<div style="text-align: center; margin-top: 20px;">
+		<button onclick="openPatientForm()" style="margin-right: 10px;">Add
+			Patient</button>
+		<button onclick="openDoctorForm()">Add Doctor</button>
+	</div>
+	<br>
+	
+	<div id="patientFormPopup" class="Pform" style="display:none;">
+    <form th:action="@{/admin/patients}" method="post" class="Pform-container">
+        <h1>Patient Registration</h1>
+        <label><b>Name</b></label>
+        <input type="text" name="name" placeholder="Enter Name" required><br />
+        <label><b>Age</b></label>
+        <input type="number" name="age" placeholder="Enter Age" required><br />
+        <label><b>Email</b></label>
+        <input type="email" name="email" placeholder="Enter Email" required><br />
+        <label><b>Password</b></label>
+        <input type="password" name="password" placeholder="Set Password" required><br />
+
+        <button type="submit" class="btn">Register</button>
+        <button type="button" class="btn cancel" onclick="closePatientForm()">Close</button>
+    </form>
+</div>
+	
+	
+	<div id="doctorFormPopup" class="Dform" style="display:none;">
+    <form th:action="@{/admin/doctors}" method="post" class="Dform-container">
+        <h1>Register Doctor</h1>
+        <label><b>Name</b></label>
+        <input type="text" name="name" placeholder="Enter Name" required><br />
+        <label><b>Specialization</b></label>
+        <input type="text" name="specialization" placeholder="Specialization" required><br />
+        <label><b>Password</b></label>
+        <input type="password" name="password" placeholder="Set Password" required><br />
+
+        <button type="submit" class="btn">Register</button>
+        <button type="button" class="btn cancel" onclick="closeDoctorForm()">Close</button>
+    </form>
+</div>
 	
 
-<h2>All Patient</h2>
-	<table class="patient-data-table Appointment" id="Appointment">
+	<h2 style="text-align: center">All Patients</h2>
+	<br>
+	<table class="patient-data-table">
 		<thead>
 			<tr>
 				<th>ID</th>
@@ -57,45 +160,46 @@
 				<td th:text="${patient.age}"></td>
 				<td th:text="${patient.email}"></td>
 				<td th:text="${patient.password}"></td>
+
 				<td>
-					<form class="update-form" 
+					<button th:onclick="|openUpdateFormPatient([[${patient.id}]])|">Update</button>
+					<form th:id="'updatePatientForm-' + ${patient.id}"
+						style="display: none;"
 						th:action="@{/admin/patients/{id}(id=${patient.id})}"
-						method="post" style="display: none">
-						<label>Name:</label>
-						<input type="text" name="name" th:value="${patient.name}" /> <label>Age:</label>
-						<input type="number" name="age" th:value="${patient.age}" /> <label>Email:</label>
-						<input type="email" name="email" th:value="${patient.email}" /> <label>Password:</label>
-						<input type="password" name="password"
-							th:value="${patient.password}" />
-						<button type="submit" >Update</button>
-					</form>
-					<button type="button" onclick="hideForm(this)">Edt</button>
-				</td>
-				<td>
-					<form th:action="@{/admin/patients/{id}/delete(id=${patient.id})}"
 						method="post">
-						<input type="hidden" name="_method" value="delete" />
+						<input type="text" name="name" th:value="${patient.name}">
+						<input type="number" name="age" th:value="${patient.age}">
+						<input type="email" name="email" th:value="${patient.email}">
+						<input type="password" name="password"
+							th:value="${patient.password}">
+						<button type="submit">Submit</button>
+					</form>
+				</td>
+
+				<td>
+					
+					<form th:action="@{/admin/patients/{id}/delete(id=${patient.id})}"
+						method="post"
+						onsubmit="return confirm('Are you sure want to delete?')">
 						<button type="submit">Delete</button>
 					</form>
 				</td>
+
 			</tr>
 		</tbody>
 	</table>
 
-	<table>
-	</table>
-	
-	
-	
-	<h2>All Doctors</h2>
-	<table class="doctor-data-table Appointment" id="Appointment">
+	<h2 style="text-align: center">All Doctors</h2>
+	<br>
+	<table class="doctor-data-table">
 		<thead>
 			<tr>
 				<th>ID</th>
 				<th>Name</th>
 				<th>Specialization</th>
 				<th>Password</th>
-				<th>Actions</th>
+				<th>Update</th>
+				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -104,30 +208,108 @@
 				<td th:text="${doctor.name}"></td>
 				<td th:text="${doctor.specialization}"></td>
 				<td th:text="${doctor.password}"></td>
+
 				<td>
-					<form th:action="@{/admin/doctors/{id}(id=${doctor.id})}" method="post">
-						<label>Name:</label>
-						<input type="text" name="name" th:value="${doctor.name}" /> 
-						<label>Specialization:</label>
-						<input type="text" name="specialization" th:value="${doctor.specialization}" />
-						<button type="submit">Update</button>
+					<button th:onclick="|openUpdateFormDoctor([[${doctor.id}]])|">Update</button>
+					<form th:id="'updateDoctorForm-' + ${doctor.id}" style="display: none;"
+						th:action="@{/admin/doctors/{id}(id=${doctor.id})}" method="post">
+						<input type="text" name="name" th:value="${doctor.name}">
+						<input type="text" name="specialization"
+							th:value="${doctor.specialization}">
+						<button type="submit">Submit</button>
 					</form>
-					<form th:action="@{/admin/doctors/{id}/delete(id=${doctor.id})}" method="post">
-						<input type="hidden" name="_method" value="delete" />
+				</td>
+
+				<td>
+					<form th:action="@{/admin/doctors/${doctor.id}/delete}" method="post"
+						onsubmit="return confirm('Are you sure want to delete?')">
+						<!-- <input type="hidden" name="_method" value="delete"> -->
 						<button type="submit">Delete</button>
 					</form>
 				</td>
+
 			</tr>
 		</tbody>
 	</table>
+	<br>
 	
-	<table>
-	</table>
-	<script type="text/javascript">
+	<section class="footer">
+			<div class="social-media-links">
+				<i class="fa-brands fa-facebook fa-2x"></i> <i
+					class="fa-brands fa-twitter fa-2x"></i> <i
+					class="fa-brands fa-instagram fa-2x"></i>
+			</div>
+
+			<p>World Of Hospitals &copy; 2020, All Rights Reserved</p>
+		</section>
+
+	<!-- 	<script type="text/javascript">
 	function hideForm(button) {
 	    let form = button.previousElementSibling;
 	    form.style.display = "block";
 	}
-	</script>
+	</script> -->
+
+	<script>
+// Show Update Form - Patient
+/* function openUpdateFormPatient(id) {
+    let form = document.getElementById('updatePatientForm-' + id);
+    form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+}
+
+// Show Update Form - Doctor
+function openUpdateFormDoctor(id) {
+    let form = document.getElementById('updateDoctorForm-' + id);
+    form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+}
+ */
+function openUpdateFormPatient(id) {
+    // Show patient update form
+    document.getElementById('updatePatientForm-' + id).style.display = 'block';
+    
+    // Hide update button
+    event.target.style.display = 'none';
+}
+
+function openUpdateFormDoctor(id) {
+    // Show doctor update form
+    document.getElementById('updateDoctorForm-' + id).style.display = 'block';
+    
+    // Hide update button
+    event.target.style.display = 'none';
+}
+
+// Confirm Delete Popup
+ function confirmDelete(url) {
+    if(confirm('Are you sure you want to delete?')) {
+        window.location.href = url;
+    }
+} 
+
+ setTimeout(() => {
+	   let success = document.querySelector('.success-message');
+	   if(success) success.style.display = 'none';
+
+	   let deleteMsg = document.querySelector('.delete-message');
+	   if(deleteMsg) deleteMsg.style.display = 'none';
+	}, 2000);
+	
+	function openPatientForm() {
+	    document.getElementById('patientFormPopup').style.display = 'block';
+	}
+
+	function closePatientForm() {
+	    document.getElementById('patientFormPopup').style.display = 'none';
+	}
+
+	function openDoctorForm() {
+	    document.getElementById('doctorFormPopup').style.display = 'block';
+	}
+
+	function closeDoctorForm() {
+	    document.getElementById('doctorFormPopup').style.display = 'none';
+	}
+	
+</script>
 </body>
 </html>

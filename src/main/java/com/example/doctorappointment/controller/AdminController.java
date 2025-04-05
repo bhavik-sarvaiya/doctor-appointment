@@ -1,6 +1,6 @@
 package com.example.doctorappointment.controller;
 
-import com.example.doctorappointment.model.Admin;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.doctorappointment.model.Appointment;
 import com.example.doctorappointment.model.Doctor;
 import com.example.doctorappointment.model.Patient;
@@ -71,6 +71,8 @@ public class AdminController {
 	        existingAppointment.setAppointmentDate(appointmentDate);
 
 	        appointmentService.updateAppointment(existingAppointment);
+	       
+   	       
 //	        return "redirect:/appointment/0";  // Redirect to avoid resubmission issues
 	        return "redirect:/admin";  // Redirect to avoid resubmission issues
 
@@ -99,13 +101,14 @@ public class AdminController {
 	@PostMapping("/doctors")
 	public String createDoctor(@ModelAttribute Doctor doctor) {
 		doctorService.createDoctor(doctor);
-		return "redirect:/admin/doctors";
+		return "redirect:/admin";
 	}
 
 	@PostMapping("/doctors/{id}")
 	public String updateDoctor(@PathVariable Integer id, 
 			@RequestParam String name, 
-			@RequestParam String specialization) {
+			@RequestParam String specialization,
+			RedirectAttributes redirectAttributes) {
 		System.out.println("in doctor update.....");
 		Optional<Doctor> optionalDoctor = doctorService.getDoctorById(id);
 	    if (optionalDoctor.isPresent()) {
@@ -113,6 +116,7 @@ public class AdminController {
 	        doctor.setName(name);
 	        doctor.setSpecialization(specialization);
 	        doctorService.updateDoctor(doctor); // Ensure this method saves changes
+	        redirectAttributes.addFlashAttribute("successMessage", "Updated Successfully!");
 	    } else {
 	        return "error"; // Handle case when doctor is not found
 	    }
@@ -124,7 +128,7 @@ public class AdminController {
 		if ("delete".equalsIgnoreCase(method)) {
 			doctorService.deleteDoctor(id);
 		}
-		return "redirect:/admin/doctors";
+		return "redirect:/admin";
 	}
 
 	// For Patients
@@ -139,7 +143,7 @@ public class AdminController {
 	public String createPatient(@ModelAttribute Patient patient) {
 		System.out.println("In createPatient");
 		patientService.createPatient(patient);
-		return "redirect:/admin/patients";
+		return "redirect:/admin";
 	}
 
 	@PostMapping("/patients/{id}")
@@ -147,7 +151,8 @@ public class AdminController {
             @RequestParam String name, 
             @RequestParam String age, 
             @RequestParam String email, 
-            @RequestParam String password) {
+            @RequestParam String password,
+            RedirectAttributes redirectAttributes) {
 		System.out.println("in patient update.....");
 		Optional<Patient> optionalPatient = patientService.getPatientById(id);
 	    if (optionalPatient.isPresent()) {
@@ -157,6 +162,8 @@ public class AdminController {
 	        patient.setEmail(email);
 	        patient.setPassword(password);
 	        patientService.updatePatient(patient); // Ensure this method saves changes
+	        redirectAttributes.addFlashAttribute("successMessage", "Updated Successfully!");
+	      
 	    } else {
 	        return "error"; // Handle case when patient is not found
 	    }
@@ -164,9 +171,13 @@ public class AdminController {
 	}
 
 	@PostMapping("/patients/{id}/delete")
-	public String deletePatient(@PathVariable Integer id) {
+	public String deletePatient(@PathVariable Integer id, 
+			RedirectAttributes redirectAttributes) {
+		System.out.println("in pateint delete....");
 		patientService.deletePatient(id);
-		return "redirect:/admin/patients";
+		redirectAttributes.addFlashAttribute("deleteMessage", "Deleted Successfully!");
+		return "redirect:/admin";
+//		return "admin";
 	}
 
 }

@@ -21,74 +21,30 @@
 				</h1>
 				<ul class="nav-items">
 					<li class="nav-item"><a href="" th:href="@{/welcome}">Home</a></li>
-					<li class="nav-item"><a href="" th:href="@{/about}">About Us</a></li>
+					<li class="nav-item"><a href="" th:href="@{/about}">About
+							Us</a></li>
 					<li class="nav-item"><a href="" th:href="@{/contact}">Contact</a></li>
 				</ul>
 			</nav>
-			
+
 			<div class="Dform">
-			<form th:action="@{/admin/doctors}" method="post" class="Dform-container">
-				<h1>Register Doctor</h1>
+				<form th:action="@{/admin/doctors}" method="post"
+					class="Dform-container">
+					<h1>Register Doctor</h1>
 
-				<label for="name"><b>Name</b></label> 
-				<input type="text" placeholder="Enter your name" name="name" required>
-				<label for="Specialization"><b>Specialization</b></label> 
-				<input type="text" placeholder="Enter Your Specialization" name="Specialization" required>
-				<label for="Password"><b>Set Password</b></label> 
-				<input type="password" placeholder="Set Your Password" name="Password" required>
+					<label for="name"><b>Name</b></label> <input type="text"
+						placeholder="Enter your name" name="name" required> <label
+						for="Specialization"><b>Specialization</b></label> <input
+						type="text" placeholder="Enter Your Specialization"
+						name="Specialization" required> <label for="Password"><b>Set
+							Password</b></label> <input type="password" placeholder="Set Your Password"
+						name="Password" required>
 
-				<button type="submit" class="btn">Register</button>
-				<button type="button" class="btn cancel">Close</button>
-			</form>
-		</div>
+					<button type="submit" class="btn">Register</button>
+					<button type="button" class="btn cancel">Close</button>
+				</form>
+			</div>
 		</div>
 	</header>
-
-	<!--     <h1>Doctors</h1> -->
-	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
-	<!--         <label>Name:</label> -->
-	<!--         <input type="text" name="name" /> -->
-	<!--         <label>Specialization:</label> -->
-	<!--         <input type="text" name="specialization" /> -->
-	<!--         <button type="submit">Add Doctor</button> -->
-	<!--     </form> -->
-<br>
-	<h2>All Doctors</h2>
-	<table class="doctor-data-table Appointment" id="Appointment">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Specialization</th>
-				<th>Password</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="doctor : ${doctors}">
-				<td th:text="${doctor.id}"></td>
-				<td th:text="${doctor.name}"></td>
-				<td th:text="${doctor.specialization}"></td>
-				<td th:text="${doctor.password}"></td>
-				<td>
-					<form th:action="@{/admin/doctors/{id}(id=${doctor.id})}" method="post">
-						<input type="hidden" name="_method" value="put" /> 
-						<label>Name:</label>
-						<input type="text" name="name" th:value="${doctor.name}" /> 
-						<label>Specialization:</label>
-						<input type="text" name="specialization" th:value="${doctor.specialization}" />
-						<button type="submit">Update</button>
-					</form>
-					<form th:action="@{/admin/doctors/{id}/delete(id=${doctor.id})}" method="post">
-						<input type="hidden" name="_method" value="delete" />
-						<button type="submit">Delete</button>
-					</form>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	
-	<table>
-	</table>
 </body>
 </html>

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,34 +36,99 @@ public class AppointmentController {
 	@Autowired
 	private DoctorService doctorService;
 	
-	@GetMapping("/appointments")
-	public String showAppointments(Model model, HttpSession session, @RequestParam(defaultValue = "0") int page, Patient patient) {
-		System.out.println("in get appoinments");
-		String username = (String) session.getAttribute("username");
-		System.out.println("username :" +username);
-		Integer userId = (Integer) session.getAttribute("userId");
-		System.out.println("userId : "+userId);
-//	    Optional<Appointment> appointment = appointmentService.getAppointmentById(userId);
-	    Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
-        Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
-	    List<Doctor> doctors = doctorService.getAllDoctors();
-	    
-	    model.addAttribute("doctors", doctors);
-        model.addAttribute("appointments", appointmentsPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", appointmentsPage.getTotalPages());
-        model.addAttribute("totalAppointments", appointmentsPage.getTotalElements());
-        
-        Patient patient2 = patientService.findByName(username);
-        session.setAttribute("username", patient2.getName());
-        session.setAttribute("userId", patient2.getId());
-
-		model.addAttribute("username", patient2.getName());
-		model.addAttribute("userId", patient2.getId());
-	    
+//	@GetMapping("/appointments/{userId}")
+//	public String showAppointments(Model model, HttpSession session, @RequestParam(defaultValue = "0") int page, Patient patient) {
+//		System.out.println("in get appoinments");
+//		String username = (String) session.getAttribute("username");
+//		System.out.println("username :" +username);
+//		Integer userId = (Integer) session.getAttribute("userId");
+//		System.out.println("userId : "+userId);
+//
+//	    Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+//        Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
+//	    List<Doctor> doctors = doctorService.getAllDoctors();
+//	    
+//	    model.addAttribute("doctors", doctors);
+//        model.addAttribute("appointments", appointmentsPage.getContent());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", appointmentsPage.getTotalPages());
+//        model.addAttribute("totalAppointments", appointmentsPage.getTotalElements());
+//        
+//        Patient patient2 = patientService.findByName(username);
+//        session.setAttribute("username", patient2.getName());
+//        session.setAttribute("userId", patient2.getId());
+//
+//		model.addAttribute("username", patient2.getName());
+//		model.addAttribute("userId", patient2.getId());
+//	    
 //       return "plogin"; // Make sure this is the correct template name
-       return "plogin :: #table-container"; // Make sure this is the correct template name
+//	}
+	
+	@GetMapping("/appointments/{userId}")
+	public String showAppointments(Model model, HttpSession session,
+	                                @RequestParam(defaultValue = "0") int page) {
+	    
+	    System.out.println("in get appointments");
+
+	    String username = (String) session.getAttribute("username");
+	    System.out.println("username : " + username);
+	    
+	    Integer userId = (Integer) session.getAttribute("userId");
+	    System.out.println("userId : " + userId);
+
+	    // Check if patient exists
+	    Patient patient = patientService.findByName(username);
+	    
+	    if (patient != null) {
+	        System.out.println("Patient Login");
+
+	        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+	        Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
+	        List<Doctor> doctors = doctorService.getAllDoctors();
+
+	        session.setAttribute("username", patient.getName());
+	        session.setAttribute("userId", patient.getId());
+
+	        model.addAttribute("username", patient.getName());
+	        model.addAttribute("userId", patient.getId());
+	        model.addAttribute("doctors", doctors);
+	        model.addAttribute("appointments", appointmentsPage.getContent());
+	        model.addAttribute("currentPage", page);
+	        model.addAttribute("totalPages", appointmentsPage.getTotalPages());
+	        model.addAttribute("totalAppointments", appointmentsPage.getTotalElements());
+
+	        return "plogin";   // Patient Login Page
+	    }
+
+	    // If patient not found, Check Doctor
+	    Doctor doctor = doctorService.findByName(username);
+
+	    if (doctor != null) {
+	        System.out.println("Doctor Login");
+
+	        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+	        Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByDoctoradPage(userId, pageable);
+//	        List<Doctor> doctors = doctorService.getAllDoctors();
+
+	        session.setAttribute("username", doctor.getName());
+	        session.setAttribute("userId", doctor.getId());
+
+	        model.addAttribute("username", doctor.getName());
+	        model.addAttribute("userId", doctor.getId());
+//	        model.addAttribute("doctors", doctors);
+	        model.addAttribute("appointments", appointmentsPage.getContent());
+	        model.addAttribute("currentPage", page);
+	        model.addAttribute("totalPages", appointmentsPage.getTotalPages());
+	        model.addAttribute("totalAppointments", appointmentsPage.getTotalElements());
+	        
+	        return "dlogin";  // Doctor Login Page
+	    }
+
+	    // If neither patient nor doctor found => Admin or Error
+	    System.out.println("User not found");
+	    return "redirect:/welcome"; 
 	}
+
 
 
 	@GetMapping("/create")
@@ -88,15 +154,17 @@ public class AppointmentController {
 		model.addAttribute("username", username);
 		model.addAttribute("userId", userId);
 		model.addAttribute("doctors", doctors);
-//		System.out.println(model.addAttribute("doctors", doctorService.getAllDoctors()));
-
-//		System.out.println(model.addAttribute("patients", patientService.getAllPatients()));
+		
 		return "appointments";
 	}
 
 	@GetMapping("/{page}")
-	public String listAppointments(Model model, @PathVariable("page") int page, HttpSession session) {
+	public String listAppointments(Model model, 
+			@PathVariable("page") int page, 
+			HttpSession session) {
 		System.out.println("Loading createAppointmentForm in appointmentsDtl");
+
+		
 		String username1 = (String) session.getAttribute("username");
 		System.out.println(username1);
 		List<Doctor> doctors = doctorService.getAllDoctors();
@@ -117,14 +185,12 @@ public class AppointmentController {
 			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
 			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
-//			return "appointmentTable"; // Return the table fragment
-//			return "appointments"; // Return the table fragment
 			return "plogin :: #table-container"; // Return the table fragment
 		} else if (Objects.nonNull(doctorService.findByName(username1))) {
 			model.addAttribute("doctors", doctors);
 			System.out.println("list app in doctor");
 			Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
-			Integer userId = (Integer) session.getAttribute("userDId");
+			Integer userId = (Integer) session.getAttribute("userId");
 			Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByDoctoradPage(userId, pageable);
 			model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
 			System.out.println("appointments" + appointmentsPage.getContent());
@@ -134,8 +200,7 @@ public class AppointmentController {
 			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
 			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
-//			return "appointmentsDtl"; // Return the table fragment
-//			return "appointments :: #table-container";
+
 			return "dlogin :: #table-container";
 		} else {
 			return "welcome";
@@ -143,7 +208,7 @@ public class AppointmentController {
 	}
 
 	@PostMapping("/create")
-	public String createAppointment(@RequestParam Integer patientId, @RequestParam Integer doctorId, Patient patient,
+	public String createAppointment(@RequestParam Integer patientId, @RequestParam Integer doctorId,
 			@RequestParam String appointmentSlot, @RequestParam LocalDate appointmentDate, HttpSession session,
 			@RequestParam(defaultValue = "0") int page, Model model) {
 		System.out.println("Loading post createAppointmentForm");
@@ -162,8 +227,9 @@ public class AppointmentController {
 		System.out.println("totalPages : " + appointmentsPage.getTotalPages());
 		model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
 		System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
+		List<Doctor> doctors = doctorService.getAllDoctors();
+		model.addAttribute("doctors", doctors); // Total appointments
 
-//		return "redirect:/appointment/" + page;
 		return "plogin";
 	}
 
@@ -193,15 +259,12 @@ public class AppointmentController {
 	        System.out.println("Before Update -> ID: " + app.getId() + ", Doctor: " + 
 	                          (app.getDoctor() != null ? app.getDoctor().getName() : "Not Assigned"));
 	    }
-
 	    // Get the existing appointment
 	    Optional<Appointment> existingAppointmentOpt = appointmentService.getAppointmentById(id);
 	    if (existingAppointmentOpt.isEmpty()) {
 	        return "error";  
 	    }
-
 	    Appointment existingAppointment = existingAppointmentOpt.get();
-
 	    // Preserve patient reference
 	    Patient patient = existingAppointment.getPatient();
 	    if (patient == null) {
@@ -239,9 +302,6 @@ public class AppointmentController {
 	        
 	    }
 	    System.out.println("userId : "+ userId);
-//	    Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
-//	    Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
-//	    model.addAttribute("appointments", appointmentsPage.getContent());
 		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 		System.out.println("pageable : " +pageable);
 		Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByPatientnadPage(userId, pageable);
@@ -267,10 +327,8 @@ public class AppointmentController {
 		// Add attributes for reloading page
 		model.addAttribute("username", existingAppointment.getPatient().getName());
 		model.addAttribute("userId", existingAppointment.getId());
-
-//	    return "redirect:/appointment/appointments"; 
+		
 		return "plogin";
-//		return "plogin :: #table-container"; // Return the table fragment
 	}
 
 
@@ -282,7 +340,7 @@ public class AppointmentController {
 			Model model,  
 			RedirectAttributes redirectAttributes) {
 		
-		 System.out.println("Deleting appointment with ID: " + id);
+		System.out.println("Deleting appointment with ID: " + id);
 		
 		Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
 		Integer userId = (Integer) session.getAttribute("userId");
@@ -303,7 +361,81 @@ public class AppointmentController {
 		redirectAttributes.addFlashAttribute("message", "Appointment deleted successfully!");
 		System.out.println("in controller del");
 		
-//		return "plogin";
-		return "redirect:/appointment/appointments";
+		  // Determine user type based on username
+	    if (patientService.findByName(userName) != null) {
+	        return "plogin";
+	    } else if (doctorService.findByName(userName) != null) {
+	        return "dlogin";
+	    } else {
+	        return "redirect:/"; // fallback in case user is not found
+	    }
 	}
+	
+	@GetMapping("/dateFilter")
+	public String getAppointmentsByDateAndSlot(
+	        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+	        @RequestParam(required = false) String slot,
+	        @RequestParam(defaultValue = "0") int page,
+	        HttpSession session,
+	        Model model) {
+
+	    Integer userId = (Integer) session.getAttribute("userId");
+	    Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+	    Page<Appointment> appointmentsPage;
+
+	    if (date != null && slot != null && !slot.isEmpty()) {
+	        appointmentsPage = appointmentService.findByDoctorIdAndDateAndSlot(userId, date, slot, pageable);
+	    } else if (date != null) {
+	        appointmentsPage = appointmentService.getAppointmentsByDate(userId, date, pageable);
+	    } else if (slot != null && !slot.isEmpty()) {
+	        appointmentsPage = appointmentService.getAppointmentsBySlot(userId, slot, pageable);
+	    } else {
+	        appointmentsPage = appointmentService.getAppointmentsByDoctoradPage(userId, pageable);
+	    }
+	    
+	    model.addAttribute("appointments", appointmentsPage.getContent());
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", appointmentsPage.getTotalPages());
+	    model.addAttribute("totalAppointments", appointmentsPage.getTotalElements());
+	    model.addAttribute("filterDate", date);
+	    model.addAttribute("filterSlot", slot);
+
+	    return "dlogin";
+//	    return "appointment/dateFilter";
+	}
+	
+	@GetMapping("/dateFilter/{page}")
+	public String listAppointmentsAfterFilter(Model model, 
+			@PathVariable("page") int page, 
+			HttpSession session,  
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+	        @RequestParam(value = "slot", required = false) String slot) {
+		System.out.println("Loading createAppointmentForm in appointmentsDtl");
+
+		System.out.println("date filter:" + date);
+		System.out.println("slot filter:" + slot);
+		String username1 = (String) session.getAttribute("username");
+		System.out.println(username1);
+		List<Doctor> doctors = doctorService.getAllDoctors();
+		System.out.println("doctors :" + doctors);
+		
+			model.addAttribute("doctors", doctors);
+			System.out.println("list app in doctor");
+			Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc("appointmentDate")));
+			Integer userId = (Integer) session.getAttribute("userId");
+			Page<Appointment> appointmentsPage = appointmentService.getAppointmentsByDoctoradPage(userId, pageable);
+			model.addAttribute("appointments", appointmentsPage.getContent()); // Current page data
+			System.out.println("appointments" + appointmentsPage.getContent());
+			model.addAttribute("currentPage", page); // Current page number
+			System.out.println("currentPage : " + page);
+			model.addAttribute("totalPages", appointmentsPage.getTotalPages()); // Total pages
+			System.out.println("totalPages : " + appointmentsPage.getTotalPages());
+			model.addAttribute("totalAppointments", appointmentsPage.getTotalElements()); // Total appointments
+			System.out.println("totalAppointments : " + appointmentsPage.getTotalElements());
+
+			return "dlogin :: #table-container";
+		}
+
 }
+
+

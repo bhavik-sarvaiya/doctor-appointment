@@ -42,6 +42,26 @@ public class WelcomeController {
         return "p_welcome"; // This corresponds to welcome.html in src/main/resources/templates
     }
     
+    @GetMapping("/d_welcome")
+    public String d_welcome(Model model, HttpSession session) {
+    	String username = (String) session.getAttribute("username");
+    	Integer userId = (Integer) session.getAttribute("userId");
+		model.addAttribute("username", username);
+		model.addAttribute("userId", userId);
+
+        return "d_welcome"; // This corresponds to welcome.html in src/main/resources/templates
+    }
+    
+    @GetMapping("/a_welcome")
+    public String a_welcome(Model model, HttpSession session) {
+    	String username = (String) session.getAttribute("username");
+    	Integer userId = (Integer) session.getAttribute("userId");
+		model.addAttribute("username", username);
+		model.addAttribute("userId", userId);
+
+        return "a_welcome"; // This corresponds to welcome.html in src/main/resources/templates
+    }
+    
     
     @GetMapping("/about")
     public String about(Model model, HttpSession session) {

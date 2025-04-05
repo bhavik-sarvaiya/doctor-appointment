@@ -16,11 +16,11 @@
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
-					<a href="" th:href="@{/p_welcome}"><i
+					<a href="" th:href="@{/a_welcome}"><i
 						class="fa-solid fa-hospital-user"></i> KK's </a>
 				</h1>
 				<ul class="nav-items">
-					<li class="nav-item"><a th:href="@{/p_welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/a_welcome}">Home</a></li>
 					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
 					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
 					<!-- Show Login or Username based on whether user is logged in -->
@@ -74,7 +74,7 @@
 					<p class="card-text">There is one consolation in being sick;
 						and that is the possibility that you may recover to a better state
 						than you were ever in before.</p>
-					<!-- <a th:href="@{/admin/patients}" class="btn btn-primary zoom">Patients
+					<!--  <a th:href="@{/admin/patients}" class="btn btn-primary zoom">Patients
 						Registration</a> -->
 				</div>
 			</div>
@@ -86,8 +86,8 @@
 					<p class="card-text">To solve a difficult problem in medicine,
 						don't study it directly, but rather pursue a curiosity about
 						nature and the rest will follow. Do basic research.</p>
-					<!-- <a th:href="@{/admin/doctors}" class="btn btn-primary zoom">Doctor
-						Registration</a> -->
+					<!--  <a th:href="@{/admin/doctors}" class="btn btn-primary zoom">Doctor
+						Registration</a> --> 
 				</div>
 			</div> 
 		</div>
@@ -99,11 +99,12 @@
 		</div>
 		
 		<div class="center-button" id="appBtn" th:if="${username != null}">
-			<a href="" th:href="@{appointment/create}"
-				class="btn btn-appointment zoom">Make an Appointment</a> <a
-				class="btn btn-appointment zoom"
-				th:href="@{appointment/appointments/{userId}(userId=${userId})}">
-				Show Appoinment</a>
+			<!-- <a href="" th:href="@{appointment/create}"
+				class="btn btn-appointment zoom">Make an Appointment</a>  -->
+			
+					<a class="btn btn-appointment zoom"
+				th:href="@{/admin}">
+				Show All Records</a>
 		</div>
 
 		<section class="footer">

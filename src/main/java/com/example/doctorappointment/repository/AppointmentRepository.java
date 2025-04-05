@@ -1,6 +1,7 @@
 package com.example.doctorappointment.repository;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -32,8 +33,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 	@Query("SELECT a FROM Appointment a WHERE a.patient.id = :patientId ORDER BY a.appointmentDate DESC")
 	Page<Appointment> findByPatientId(@Param("patientId") Integer patientId, Pageable pageable);
 	
-
-
-	
+	Page<Appointment> findByDoctorIdAndAppointmentDateAndAppointmentSlot(Integer doctorId, LocalDate date, String slot, Pageable pageable);
+	Page<Appointment> findByDoctorIdAndAppointmentDate(Integer doctorId, LocalDate date, Pageable pageable);
+	Page<Appointment> findByDoctorIdAndAppointmentSlot(Integer doctorId, String slot, Pageable pageable);
+	Page<Appointment> findByDoctorId(Integer doctorId, Pageable pageable);
 	
 }

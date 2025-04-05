@@ -86,5 +86,18 @@ public class AppointmentService {
 		Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 		return appointmentRepository.findByDoctor(doctor,pageable);
 	}
+	
+	public Page<Appointment> getAppointmentsByDate(Integer doctorId, LocalDate date, Pageable pageable) {
+	    return appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date, pageable);
+	}
+	
+	public Page<Appointment> findByDoctorIdAndDateAndSlot(Integer doctorId, LocalDate date, String slot, Pageable pageable) {
+	    return appointmentRepository.findByDoctorIdAndAppointmentDateAndAppointmentSlot(doctorId, date, slot, pageable);
+	}
+
+	public Page<Appointment> getAppointmentsBySlot(Integer doctorId, String slot, Pageable pageable) {
+	    return appointmentRepository.findByDoctorIdAndAppointmentSlot(doctorId, slot, pageable);
+	}
+	
 
 }

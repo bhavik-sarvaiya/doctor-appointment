@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +24,7 @@ public class Patient {
 	private String email;
 	private String password;
 	
-	 @OneToMany(mappedBy = "patient")
+	 @OneToMany(mappedBy = "patient" , cascade = CascadeType.ALL, orphanRemoval = true)
 	    private List<Appointment> appointments;  // One patient can have many appointments
 
 	public Patient() {

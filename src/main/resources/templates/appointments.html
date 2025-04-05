@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Book Appointment</title>
+<link rel="stylesheet" type="text/css" href=""
+	th:href="@{/css/styles.css}" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+	<header class="header2">
+		<div class="container">
+			<nav class="navbar">
+				<h1 class="logo">
+					<a th:href="@{/welcome}"><i class="fa-solid fa-hospital-user"></i>
+						KK's </a>
+				</h1>
+				<ul class="nav-items">
+					<li class="nav-item"><a th:href="@{/welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
+					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
+					<li class="nav-item" th:if="${username == null}"
+						onclick="openForm()"><a>Login</a></li>
+					<li class="nav-item" th:if="${username != null}"><span
+						style="color: white">Welcome, <span th:text="${username}"></span></span>
+					</li>
+					<li class="nav-item" th:if="${username != null}"><a
+						th:href="@{/logout}">logout</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+
+	<div class="Dform">
+		<h1>Book an Appointment</h1>
+		<form action="/appointment/create" method="post">
+
+			<label for="patient">Patient:</label> <input name="patientName"
+				th:value="${username}" readonly="readonly"><br> <input
+				type="hidden" name="patientId" th:value="${userId}"><br>
+			<br> <label for="doctor">Doctor:</label> <select name="doctorId"
+				required>
+				<option th:each="doctor : ${doctors}" th:value="${doctor.id}"
+					th:text="${doctor.name}"></option>
+			</select> <br> <br> <label for="appointmentDate">Appointment
+				Date :</label> <input type="date" name="appointmentDate" required /> <label
+				for="appointmentSlot">Select Appoinment Slot:</label> <select
+				name="appointmentSlot" id="appointmentSlot" required>
+				<option value="9AM-12PM">9AM-12PM</option>
+				<option value="4PM-9PM">4PM-9PM</option>
+			</select> <br> <br>
+			 
+			<button type="submit">Book Appointment</button>
+
+		</form>
+		<br>
+	</div>
+
+	<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const appointmentDateInput = document.querySelector('input[name="appointmentDate"]');
+
+            // Disable past dates and Sundays
+            appointmentDateInput.addEventListener("input", function () {
+                const selectedDate = new Date(this.value);
+                const today = new Date();
+
+                // Reset time components for accurate comparison
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate < today) {
+                    alert("Past dates are not allowed!");
+                    this.value = "";
+                } else if (selectedDate.getDay() === 0) {
+                    alert("Appointments cannot be booked on Sundays!");
+                    this.value = "";
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

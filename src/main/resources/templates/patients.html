@@ -21,6 +21,7 @@
 				</h1>
 				<ul class="nav-items">
 					<li class="nav-item"><a href="" th:href="@{/welcome}">Home</a></li>
+					
 					<li class="nav-item"><a href="" th:href="@{/about}">About
 							Us</a></li>
 					<li class="nav-item"><a href="" th:href="@{/contact}">Contact</a></li>
@@ -49,68 +50,6 @@
 		</div>
 	</header>
 
-	<!--     <h1>Doctors</h1> -->
-	<!--     <form th:action="@{/admin/doctors}" method="post"> -->
-	<!--         <label>Name:</label> -->
-	<!--         <input type="text" name="name" /> -->
-	<!--         <label>Specialization:</label> -->
-	<!--         <input type="text" name="specialization" /> -->
-	<!--         <button type="submit">Add Doctor</button> -->
-	<!--     </form> -->
-	<br>
-	<h2>All Patient</h2>
-	<table class="patient-data-table Appointment" id="Appointment">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Name</th>
-				<th>Age</th>
-				<th>Email</th>
-				<th>Password</th>
-				<th>Update</th>
-				<th>Delete</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="patient : ${patients}">
-				<td th:text="${patient.id}"></td>
-				<td th:text="${patient.name}"></td>
-				<td th:text="${patient.age}"></td>
-				<td th:text="${patient.email}"></td>
-				<td th:text="${patient.password}"></td>
-				<td>
-					<form id="update"
-						th:action="@{/admin/patients/{id}(id=${patient.id})}"
-						method="post" style="display: none">
-						<input type="hidden" name="_method" value="put" /> <label>Name:</label>
-						<input type="text" name="name" th:value="${patient.name}" /> <label>Age:</label>
-						<input type="number" name="age" th:value="${patient.age}" /> <label>Email:</label>
-						<input type="email" name="email" th:value="${patient.email}" /> <label>Password:</label>
-						<input type="password" name="password"
-							th:value="${patient.password}" />
-
-					</form>
-					<button type="submit" onclick="hideForm()">Update</button>
-				</td>
-				<td>
-					<form th:action="@{/admin/patients/{id}/delete(id=${patient.id})}"
-						method="post">
-						<input type="hidden" name="_method" value="delete" />
-						<button type="submit">Delete</button>
-					</form>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<table>
-	</table>
-	<script type="text/javascript">
-		function hideForm() {
-			document.getElementById("update").style = "display:block"
-
-		}
-	</script>
 </body>
 </html>
 

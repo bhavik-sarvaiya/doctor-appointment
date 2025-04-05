@@ -16,11 +16,11 @@
 		<div class="container">
 			<nav class="navbar">
 				<h1 class="logo">
-					<a href="" th:href="@{/p_welcome}"><i
+					<a href="" th:href="@{/d_welcome}"><i
 						class="fa-solid fa-hospital-user"></i> KK's </a>
 				</h1>
 				<ul class="nav-items">
-					<li class="nav-item"><a th:href="@{/p_welcome}">Home</a></li>
+					<li class="nav-item"><a th:href="@{/d_welcome}">Home</a></li>
 					<li class="nav-item"><a th:href="@{/about}">About Us</a></li>
 					<li class="nav-item"><a th:href="@{/contact}">Contact</a></li>
 					<!-- Show Login or Username based on whether user is logged in -->
@@ -97,11 +97,11 @@
 		<div id="lgText" th:if="${username == null}">
 			<p style="text-align: center;">Please Login to book appoinment.</p>
 		</div>
-		
+
 		<div class="center-button" id="appBtn" th:if="${username != null}">
-			<a href="" th:href="@{appointment/create}"
-				class="btn btn-appointment zoom">Make an Appointment</a> <a
-				class="btn btn-appointment zoom"
+			<!-- <a href="" th:href="@{appointment/create}"
+				class="btn btn-appointment zoom">Make an Appointment</a>  -->
+				<a class="btn btn-appointment zoom"
 				th:href="@{appointment/appointments/{userId}(userId=${userId})}">
 				Show Appoinment</a>
 		</div>

@@ -72,18 +72,19 @@
     </tbody>
 </table>
 
- <div class="pagination" id="pagination-container">
-    <input type="hidden" id="totalPages" th:value="${totalPages}" />
-    <input type="hidden" id="currentPage" th:value="${currentPage}" />
+		<div class="pagination" id="pagination-container">
+			<input type="hidden" id="totalPages" th:value="${totalPages}" /> <input
+				type="hidden" id="currentPage" th:value="${currentPage}" /> <a
+				href="#" th:if="${currentPage > 0}"
+				th:data-page="${currentPage - 1}" class="pagination-link">Previous</a>
+			<a href="#" th:if="${currentPage < totalPages - 1}"
+				th:data-page="${currentPage + 1}" class="pagination-link">Next</a> <br>
+			<span>Page <span id="currentPageDisplay"
+				th:text="${currentPage + 1}"></span> of <span id="totalPagesDisplay"
+				th:text="${totalPages}"></span></span>
+		</div>
 
-    <a href="#" th:if="${currentPage > 0}" th:data-page="${currentPage - 1}" class="pagination-link">Previous</a>
-    <a href="#" th:if="${currentPage < totalPages - 1}" th:data-page="${currentPage + 1}" class="pagination-link">Next</a>
-
-    <br>
-    <span>Page <span id="currentPageDisplay" th:text="${currentPage + 1}"></span> of <span id="totalPagesDisplay" th:text="${totalPages}"></span></span>
-</div> 
-
-</div>
+	</div>
 
 <!-- Update Appointment Modal (Initially Hidden) -->
 <div id="updateModal" class="modal">
@@ -114,31 +115,6 @@
     </div>
    
 </div>
-
-
-<!-- 		<div class="pagination" id="pagination-container">
-		<input type="hidden" id="totalPages" th:value="${totalPages}" />
-		 <span th:if="${currentPage > 0}"> <a href="#"
-				th:data-page="${currentPage - 1}" class="pagination-link">Previous</a>
-			</span> <span th:if="${currentPage < totalPages - 1}"> <a href="#"
-				th:data-page="${currentPage + 1}" class="pagination-link">Next</a>
-			</span><br> <span>Page <span th:text="${currentPage + 1}"></span>
-				of <span th:text="${totalPages}"></span>
-			</span>
-	</div> -->
-	
-<!-- <div class="pagination" id="pagination-container">
-    <input type="hidden" id="totalPages" th:value="${totalPages}" />
-    <input type="hidden" id="currentPage" th:value="${currentPage}" />
-
-    <a href="#" th:if="${currentPage > 0}" th:data-page="${currentPage - 1}" class="pagination-link">Previous</a>
-    <a href="#" th:if="${currentPage < totalPages - 1}" th:data-page="${currentPage + 1}" class="pagination-link">Next</a>
-
-    <br>
-    <span>Page <span id="currentPageDisplay" th:text="${currentPage + 1}"></span> of <span id="totalPagesDisplay" th:text="${totalPages}"></span></span>
-</div> -->
-
-
 
 	<div class="center-button" id="appBtn" th:if="${session.username != null}">
     <a th:href="@{/appointment/create}" id="appointmentBtn"

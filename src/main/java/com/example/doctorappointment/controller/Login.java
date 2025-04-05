@@ -54,7 +54,7 @@ public class Login {
 		}
 
 		// Check if doctor is logged in
-		Integer userDId = (Integer) session.getAttribute("userDId");
+		Integer userDId = (Integer) session.getAttribute("userId");
 		if (userDId != null) {
 			Optional<Doctor> doctorOptional = doctorService.getDoctorById(userDId);
 			if (doctorOptional.isPresent()) {
@@ -77,7 +77,7 @@ public class Login {
 			System.out.println("in authenticatedAdmin......");
 			session.setAttribute("username", authenticatedAdmin.getName());
 			System.out.println("usernameAdmin : "+ authenticatedAdmin.getName());
-			session.setAttribute("userDId", authenticatedAdmin.getId());
+			session.setAttribute("userId", authenticatedAdmin.getId());
 			return loadAdminDashboard(authenticatedAdmin, model, session);
 		}
 
@@ -85,7 +85,7 @@ public class Login {
 		Doctor authenticatedDoctor = doctorService.findByNameAndPassword(doctor.getName(), doctor.getPassword());
 		if (authenticatedDoctor != null) {
 			session.setAttribute("username", authenticatedDoctor.getName());
-			session.setAttribute("userDId", authenticatedDoctor.getId());
+			session.setAttribute("userId", authenticatedDoctor.getId());
 			return loadDoctorDashboard(authenticatedDoctor, page, model, session);
 		}
 
